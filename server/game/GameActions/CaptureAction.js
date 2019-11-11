@@ -4,6 +4,7 @@ class CaptureAction extends CardAction {
     setDefaultProperties() {
         this.amount = 1;
         this.ownController = false;
+        this.canAffectWithNoAmber = false;
     }
 
     setup() {
@@ -18,8 +19,9 @@ class CaptureAction extends CardAction {
 
     canAffect(card, context) {
         let player = this.ownController ? card.controller : card.controller.opponent;
+        let amberToTake = (this.canAffectWithNoAmber || player.amber > 0) && this.amount > 0;
         return player && player.checkRestrictions('capture', context) &&
-               player.amber > 0 && this.amount > 0 && super.canAffect(card, context);
+               amberToTake && super.canAffect(card, context);
     }
 
     getEvent(card, context) {
